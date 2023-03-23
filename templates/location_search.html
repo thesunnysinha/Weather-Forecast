@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block content %}
+<br />
+
+<div class="container">
+  <h1>Search Location</h1>
+  {% if messages %} 
+    {% for message in messages%}
+      <div class="alert alert-danger" role="alert">{{ message }}</div>
+    {% endfor %} 
+  {% endif %}
+  <form method="post">
+    {% csrf_token %}
+    <div class="box">
+      <label for="{{ form.city.id_for_label }}">City:</label>
+      {{ form.city }}
+    </div>
+    <div class="box">
+      <label for="{{ form.state.id_for_label }}">State:</label>
+      {{ form.state }}
+    </div>
+    <div class="box">
+      <label for="{{ form.country.id_for_label }}">Country:</label>
+      {{ form.country }}
+    </div>
+    {% if form.non_field_errors %}
+      <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+    {% endif %}
+    <button type="submit" name="action" class="btn" value="search">
+      Search
+    </button>
+    <button type="submit" name="action" class="btn" value="add-to-favorites" >
+      Add to favorites
+    </button>
+    <button type="submit" name="action" class="btn" value="send-mail" >
+      send to mail
+    </button>
+    </form>
+  <div class="box">
+    {% if forecast %}
+      <div id="search-results">
+        <h2>Results</h2>
+        <div class="row">
+          <div class="col-md-6">
+            <h5>City: {{ data.city}}</h5>
+            <div class="forecast-container">
+              {% for day in forecast %}
+                <div class="forecast-item">
+                  <h5>Date: {{ day.date }}</h5>
+                  <h5>Temperature: {{ day.temperature }}</h5>
+                  <h5>Humidity: {{ day.humidity }}</h5>
+                  <h5>Wind speed: {{ day.wind_speed }}</h5>
+                  <h5>Description: {{ day.description }}</h5>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="map-container">
+              <img src="{{ location_map }}" alt="Map of location">
+            </div>
+          </div>
+        </div>
+      </div>
+    {% else %} 
+      {% if form.is_bound %}
+        <div></div>
+      {% else %}
+        <div class="alert alert-info">Enter a location to search.</div>
+      {% endif %} 
+    {% endif %} 
+    {% if location_added %}
+      <div class="alert alert-success">Location added to favorites!</div>
+    {% endif %}
+  </div>
+</div>
+<style>
+  .forecast-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .forecast-item {
+    border: 1px solid black;
+    padding: 10px;
+    width: 18%;
+  }
+
+  .map-container {
+    display: flex;
+    justify-content: center;
+  }
+
+  .map-container img {
+    max-width: 100%;
+    max-height: 400px;
+  }
+</style>
+{% endblock %}

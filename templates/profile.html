@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+    <div class="d-flex justify-content-center" style="text-align: center;">
+        <div class="table-responsive">
+            <h1>{{ user.username }}</h1>
+            <h1>{{ user.email }}</h1>
+            <hr>
+            <h3>Favorites</h3>
+            {% if locations %}
+                <table class="table table-striped table-hover" style="justify-content: center;text-align: center;align-items: center;">
+                    <thead>
+                        <tr>
+                            <th>City</th>
+                            <th>State</th>
+                            <th>Country</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for location in locations %}
+                        <tr>
+                            <td>{{ location.city }}</td>
+                            <td>{{ location.state }}</td>
+                            <td>{{ location.country }}</td>
+                            <td>
+                                <form action="{% url 'home' %}" method="POST">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="city" value="{{ location.city }}">
+                                    <input type="hidden" name="state" value="{{ location.state }}">
+                                    <input type="hidden" name="country" value="{{ location.country }}">
+                                    <button type="submit" class="btn btn-primary">Search</button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <h3>No locations added to favorites yet.</h3>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}
